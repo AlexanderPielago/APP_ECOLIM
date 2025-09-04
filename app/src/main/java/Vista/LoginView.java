@@ -25,7 +25,6 @@ import Model.UsuarioModel;
 public class LoginView extends AppCompatActivity {
 
     private TextInputEditText etUsername, etPassword;
-    private MaterialButton btnLogin;
     private UsuarioDao usuarioDao;
     private ExecutorService executorService;
 
@@ -38,7 +37,7 @@ public class LoginView extends AppCompatActivity {
 
         etUsername = findViewById(R.id.username_edit_text);
         etPassword = findViewById(R.id.password_edit_text);
-        btnLogin   = findViewById(R.id.login_button);
+        MaterialButton btnLogin = findViewById(R.id.login_button);
 
         // Inicializa DB y DAO
         AppDatabase db = Room.databaseBuilder(

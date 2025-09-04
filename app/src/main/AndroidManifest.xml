@@ -22,6 +22,9 @@
         <activity
             android:name="Vista.MenuView"
             android:exported="false" />
+        <activity
+            android:name="Vista.RegisterCollection"
+            android:exported="false" />
     </application>
 
 </manifest>
