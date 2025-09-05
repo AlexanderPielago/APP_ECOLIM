@@ -1,0 +1,8 @@
+<resources>
+    <string-array name="tipo_residuo">
+        <item>Orgánico</item>
+        <item>Plástico</item>
+        <item>Vidrio</item>
+        <item>Metal</item>
+    </string-array>
+</resources>
