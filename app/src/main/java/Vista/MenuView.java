@@ -30,26 +30,26 @@ public class MenuView extends AppCompatActivity {
         // Asignar listeners
         btnregisterCollection.setOnClickListener(v -> {
             Toast.makeText(this, "Registrar recolección", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(MenuView.this, RegisterController.class);
+            Intent intent = new Intent(MenuView.this, RegisterView.class);
             startActivity(intent);
         });
 
         btntype_waste.setOnClickListener(v -> {
             Toast.makeText(this, "Tipos de residuos", Toast.LENGTH_SHORT).show();
-            // Intent intent = new Intent(MenuView.this, TypeWasteActivity.class);
-            // startActivity(intent);
+            Intent intent = new Intent(MenuView.this, TypeWasteView.class);
+            startActivity(intent);
         });
 
         btnreport.setOnClickListener(v -> {
             Toast.makeText(this, "Reportes", Toast.LENGTH_SHORT).show();
-            // Intent intent = new Intent(MenuView.this, ReportActivity.class);
-            // startActivity(intent);
+            Intent intent = new Intent(MenuView.this, ReportView.class);
+            startActivity(intent);
         });
 
         btnrecord.setOnClickListener(v -> {
             Toast.makeText(this, "Historial", Toast.LENGTH_SHORT).show();
-            // Intent intent = new Intent(MenuView.this, RecordActivity.class);
-            // startActivity(intent);
+            Intent intent = new Intent(MenuView.this, RecordView.class);
+            startActivity(intent);
         });
 
         btnclose.setOnClickListener(v -> {

@@ -8,4 +8,7 @@
     <string name="tipos_de_residuos">Tipos de Residuos</string>
     <string name="registro_de_recolecci_n">Registro de Recolección</string>
     <string name="configuraci_n">Configuración</string>
+    <string name="org_nico">♻ Orgánico</string>
+    <string name="registro_de_residuos">Registro de Residuos</string>
+    <string name="cantidad_residuo">%1$.1f kg</string>
 </resources>

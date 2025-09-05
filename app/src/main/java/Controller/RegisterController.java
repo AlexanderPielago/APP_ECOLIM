@@ -1,68 +1,109 @@
 package Controller;
 
-import Vista.RegisterCollection;
+import Vista.RegisterView;
+import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.ArrayAdapter;
-import android.view.View;
+import android.widget.Toast;
+
+import com.example.ecolim_app.R;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class RegisterController {
 
-    private final RegisterCollection vista;
+    private final RegisterView vista;
+    private final Context context;
+    private final ExecutorService executorService;
+    private final Handler handler;
 
-    // El constructor recibe una instancia de la clase Vista.
-    public RegisterController(RegisterCollection vista) {
+    // ✅ Inyección de dependencias más clara
+    public RegisterController(RegisterView vista, Context context) {
         this.vista = vista;
+        this.context = context;
+        this.executorService = Executors.newSingleThreadExecutor();
+        this.handler = new Handler(Looper.getMainLooper());
     }
 
+    // Inicializa controladores de eventos y adaptadores
     public void initController() {
-        // Inicializar el adaptador para el AutoCompleteTextView
         setupSpinnerAdapter();
-
-        // Configurar el listener para el botón
         setupButtonListener();
     }
 
+    // ✅ Los datos se pueden extraer desde strings.xml para mejor mantenimiento
     private void setupSpinnerAdapter() {
-        // Debes obtener los datos para el adaptador de un recurso de tu app (arrays.xml)
-        // o de otra fuente (base de datos, API).
-        String[] tiposDeResiduo = {"Plástico", "Vidrio", "Papel", "Orgánico"};
+        String[] tiposDeResiduo = context.getResources().getStringArray(
+                R.array.tipo_residuo// Defínelo en res/values/strings.xml
+        );
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                vista,
-                android.R.layout.simple_dropdown_item_1line,
+                context,
+                android.R.layout.simple_spinner_dropdown_item, // Mejor visual que 1line
                 tiposDeResiduo
         );
-
-        // Configurar el adaptador en el AutoCompleteTextView
-        vista.spinnerTipo.setAdapter(adapter);
+        vista.getSpinnerTipo().setAdapter(adapter);
     }
 
+    // ✅ Uso de lambda en vez de clase anónima
     private void setupButtonListener() {
-        // Configurar un OnClickListener para el botón de enviar
-        // El botón en la vista se llama btnEnviar, no btn.
-        vista.btnEnviar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                enviarRegistro();
-            }
-        });
+        vista.getBtnEnviar().setOnClickListener(v -> enviarRegistro());
     }
 
+    // ✅ Validación más robusta con trim() y cantidad > 0
     private void enviarRegistro() {
-        // Obtener los datos de los campos
-        String nombre = vista.etNombre.getText().toString();
-        String cantidadStr = vista.etCantidad.getText().toString();
-        String tipo = vista.spinnerTipo.getText().toString();
+        String nombre = vista.getEtNombre().getText().toString().trim();
+        String cantidadStr = vista.getEtCantidad().getText().toString().trim();
+        String tipo = vista.getSpinnerTipo().getText().toString().trim();
 
-        // Validar los datos
         if (nombre.isEmpty() || cantidadStr.isEmpty() || tipo.isEmpty()) {
-            vista.showToast("Por favor, complete todos los campos.");
+            showToast("Por favor, complete todos los campos.");
             return;
         }
 
         try {
             double cantidad = Double.parseDouble(cantidadStr);
-            vista.showToast("Datos listos para enviar: Nombre: " + nombre + ", Cantidad: " + cantidad + ", Tipo: " + tipo);
+            if (cantidad <= 0) {
+                showToast("Ingrese una cantidad mayor a 0.");
+                return;
+            }
+
+            // ✅ Ejecutar en segundo plano
+            executorService.execute(() -> {
+                // Simulación de guardar en BD
+                boolean registroExitoso = true; // Aquí tu lógica real de BD
+
+                // ✅ Volver al hilo principal
+                handler.post(() -> {
+                    if (registroExitoso) {
+                        showToast("Registro exitoso: " + nombre);
+                        limpiarCampos();
+                    } else {
+                        showToast("Error al guardar el registro.");
+                    }
+                });
+            });
+
         } catch (NumberFormatException e) {
-            vista.showToast("Cantidad inválida. Ingrese un número.");
+            showToast("Cantidad inválida. Ingrese un número válido.");
         }
+    }
+
+    // ✅ Método para limpiar campos
+    private void limpiarCampos() {
+        vista.getEtNombre().setText("");
+        vista.getEtCantidad().setText("");
+        vista.getSpinnerTipo().setText("");
+    }
+
+    // ✅ Centralizar mensajes
+    private void showToast(String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
+
+    // ✅ Liberar recursos cuando ya no se use el controlador
+    public void shutdown() {
+        executorService.shutdown();
     }
 }
