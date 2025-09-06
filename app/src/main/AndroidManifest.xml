@@ -29,7 +29,7 @@
             android:name="Vista.RegisterView"
             android:exported="false" />
         <activity
-            android:name="Vista.TypeWasteView"
+            android:name="Vista.ResiduoView"
             android:exported="false" />
         <activity
             android:name="Vista.ReportView"

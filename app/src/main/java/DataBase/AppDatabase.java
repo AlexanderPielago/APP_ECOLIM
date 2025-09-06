@@ -1,36 +1,69 @@
 package DataBase;
 
-import android.content.Context;
-
+import androidx.annotation.NonNull;
 import androidx.room.Database;
-import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import Dao.UsuarioDao;
+import Dao.ResiduoDao;
+import Dao.InformacionDao;
+import Dao.RecoleccionDao;
+
 import Model.UsuarioModel;
+import Model.ResiduoModel;
+import Model.InformacionModel;
+import Model.RecoleccionModel;
 
-@Database(entities = {UsuarioModel.class}, version = 1, exportSchema = false)
+import java.util.concurrent.Executors;
+
+@Database(
+        entities = {
+                UsuarioModel.class,
+                ResiduoModel.class,
+                InformacionModel.class,
+                RecoleccionModel.class
+        },
+        version = 1,
+        exportSchema = false
+)
 public abstract class AppDatabase extends RoomDatabase {
+
     public abstract UsuarioDao usuarioDao();
+    public abstract ResiduoDao residuoDao();
+    public abstract InformacionDao informacionDao();
+    public abstract RecoleccionDao recoleccionDao();
 
-    private static volatile AppDatabase INSTANCE;
+    /**
+     * Callback para insertar datos iniciales.
+     * Ahora no depende de App.getContext().
+     * Se debe pasar el DAO desde DatabaseClient al crear la base de datos.
+     */
+    public static void insertInitialData(ResiduoDao dao) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            // Revisar si ya hay residuos
+            if (dao.obtenerTodos().isEmpty()) {
+                ResiduoModel organico = new ResiduoModel();
+                organico.nombre = "Orgánico";
+                organico.descripcion = "Residuos biodegradables";
 
-    public static AppDatabase getInstance(Context context) {
-        if (INSTANCE == null) {
-            synchronized (AppDatabase.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = Room.databaseBuilder(
-                                    context.getApplicationContext(),
-                                    AppDatabase.class,
-                                    "ECOLIM.db" // 🔹 este es el nombre interno de la BD
-                            )
-                            .createFromAsset("ECOLIM.db") // 🔹 busca en assets/
-                            .fallbackToDestructiveMigration()
-                            .allowMainThreadQueries() // 🔹 solo para pruebas, mejor usar hilo en producción
-                            .build();
-                }
+                ResiduoModel plastico = new ResiduoModel();
+                plastico.nombre = "Plástico";
+                plastico.descripcion = "Residuos de plástico reciclable";
+
+                ResiduoModel vidrio = new ResiduoModel();
+                vidrio.nombre = "Vidrio";
+                vidrio.descripcion = "Botellas y frascos de vidrio";
+
+                ResiduoModel metal = new ResiduoModel();
+                metal.nombre = "Metal";
+                metal.descripcion = "Latas y chatarra metálica";
+
+                dao.insertarResiduo(organico);
+                dao.insertarResiduo(plastico);
+                dao.insertarResiduo(vidrio);
+                dao.insertarResiduo(metal);
             }
-        }
-        return INSTANCE;
+        });
     }
 }

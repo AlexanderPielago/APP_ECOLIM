@@ -9,8 +9,6 @@ import androidx.cardview.widget.CardView;
 
 import com.example.ecolim_app.R;
 
-import Controller.RegisterController;
-
 public class MenuView extends AppCompatActivity {
 
     private CardView btnregisterCollection, btntype_waste, btnreport, btnrecord, btnclose;
@@ -35,8 +33,8 @@ public class MenuView extends AppCompatActivity {
         });
 
         btntype_waste.setOnClickListener(v -> {
-            Toast.makeText(this, "Tipos de residuos", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(MenuView.this, TypeWasteView.class);
+             Toast.makeText(this, "Tipos de residuos", Toast.LENGTH_SHORT).show();
+             Intent intent = new Intent(MenuView.this, ResiduoView.class);
             startActivity(intent);
         });
 

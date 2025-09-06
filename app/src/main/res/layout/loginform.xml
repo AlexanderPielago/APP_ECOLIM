@@ -56,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Nombre de usuario"
-            android:inputType="textEmailAddress" />
+            android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Campo Contraseña -->
@@ -70,7 +70,7 @@
         app:layout_constraintTop_toBottomOf="@id/username_input_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:passwordToggleEnabled="true"
+        app:endIconMode="password_toggle"
         app:layout_constraintBottom_toTopOf="@id/login_button">
 
         <com.google.android.material.textfield.TextInputEditText
